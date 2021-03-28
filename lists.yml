@@ -1,0 +1,14 @@
+- name: 'Demo apply_conf'
+  hosts: dp1
+  connection: local
+  tasks:
+
+    - name: Get supported actions from the default domain
+      community.datapower.list_actions:
+        domain: default
+    
+    - name: Get supported objects from the default domain
+      community.datapower.list_objects:
+        domain: default
+
+

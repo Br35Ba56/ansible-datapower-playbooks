@@ -1,0 +1,24 @@
+- name: 'test play'
+  hosts: dp1
+  connection: local
+  vars:
+    domain: default
+  tasks:
+
+    - name: List all supported actions for the provided domain
+      community.datapower.list_actions:
+        domain: default
+
+    - name: Get the schema of the action to determine correct parameters
+      community.datapower.get_action_schema:
+        domain: default
+        action: TCPConnectionTest
+
+    - name: Perform TCP Connection Test
+      community.datapower.action:
+        domain: default
+        action: TCPConnectionTest
+        parameters:
+          RemoteHost: localhost
+          RemotePort: 9090
+          

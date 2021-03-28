@@ -1,0 +1,70 @@
+- name: ''
+  hosts: dp1
+  connection: local
+  tasks:
+    - name: Enable the WebGUI
+      community.datapower.config:
+        domain: default
+        class_name: WebGUI
+        name: WebGUI-Settings
+        state: present
+        config:
+          mAdminState: enabled
+
+    - name: Get WebGUI
+      community.datapower.get_config:
+        domain: default
+        class_name: WebGUI
+      register: before
+
+    - name: Make a change to the WebGui
+      community.datapower.config:
+        domain: default
+        class_name: WebGUI
+        name: WebGUI-Settings
+        state: present
+        config:
+          mAdminState: disabled
+ 
+    - name: Update a CrytpoValCred Certificate list property to 1 item.
+      community.datapower.config:
+        domain: default
+        state: present
+        config:
+          CryptoValCred:
+            Certificate:
+            #- value: Test2
+            - value: Test1
+            name: valcred
+      register: valcred_result
+
+    - name: Get valcred to check its state was update.
+      community.datapower.get_config:
+        domain: default 
+        class_name: CryptoValCred
+      register: valcred
+    
+    - name: Assert the CrytpoValCred Certificate list was updated to 1 item.
+      assert:
+        that:
+          - "{{ valcred['response']['CryptoValCred']['Certificate']['value'] is defined }}"
+          - "{{ valcred_result['response']['valcred'] == 'Configuration was updated.'  }}"
+      ignore_errors: no
+          
+    - name: Update a CrytpoValCred Certificate list property to 2 items.
+      community.datapower.config:
+        domain: default
+        state: present
+        config:
+          CryptoValCred:
+            Certificate:
+            - value: Test2
+            - value: Test1
+            name: valcred
+      register: valcred_result
+
+    - name: Assert the CrytpoValCred Certificate list was updated to 2 items.
+      assert:
+        that:
+          - "{{ valcred['response']['CryptoValCred']['Certificate'] | length == 2 }}"
+          - "{{valcred_result['response']['valcred'] == 'Configuration was updated.' }}"
