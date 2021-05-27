@@ -1,0 +1,83 @@
+- name: 'Demo filestore features'
+  hosts: dp1
+  connection: local
+  vars:
+    dir_path: ./collections/ansible_collections/community/datapower/tests/unit/module_utils/test_data/copy/recurse_test/local/GetStat
+  tasks:
+    - name: Delete if needed
+      community.datapower.files:
+        domain: default
+        src: demo.txt
+        #content: "aGVsbG8gd29ybGQK"
+        dest: local/demo.txt
+        state: absent
+    
+    - name: create demo.txt at local
+      community.datapower.files:
+        domain: default
+        src: demo.txt
+        #content: "aGVsbG8gd29ybGQK"
+        dest: local/demo.txt
+        state: present
+      register: create_result
+  
+    - name: Validate create demo.txt at local
+      assert:
+        that:
+          - "{{ create_result['changed'] == True }}"
+          - "{{ create_result['response']['result'] == 'File was created.' }}"
+
+    - name: Update demo.txt at local
+      community.datapower.files:
+        domain: default
+        src: demo2.txt
+        #content: "aGVsbG8gd29ybGQK"
+        dest: local/demo.txt
+        state: present
+      register: update_result
+
+    - name: Validate demo.txt at local
+      assert:
+        that:
+          - "{{ update_result['changed'] == True }}"
+          - "{{ update_result['response']['result'] == 'File was updated.' }}"
+    
+  #Same Test just with subdirectory
+    - name: Delete if needed
+      community.datapower.files:
+        domain: default
+        src: demo.txt
+        #content: "aGVsbG8gd29ybGQK"
+        dest: local/subdir/demo.txt
+        state: absent
+    
+    - name: create demo.txt at local
+      community.datapower.files:
+        domain: default
+        src: demo.txt
+        #content: "aGVsbG8gd29ybGQK"
+        dest: local/subdir/demo.txt
+        state: present
+      register: create_result
+  
+    - name: Validate Create File
+      assert:
+        that:
+          - "{{ create_result['changed'] == True }}"
+          - "{{ create_result['response']['result'] == 'File was created.' }}"
+
+    - name: Update demo.txt at local
+      community.datapower.files:
+        domain: default
+        src: demo2.txt
+        #content: "aGVsbG8gd29ybGQK"
+        dest: local/subdir/demo.txt
+        state: present
+      register: update_result
+
+    - name: Validate Update File
+      assert:
+        that:
+          - "{{ update_result['changed'] == True }}"
+          - "{{ update_result['response']['result'] == 'File was updated.' }}"
+

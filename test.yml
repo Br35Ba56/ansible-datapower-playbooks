@@ -1,0 +1,21 @@
+- name: ''
+  hosts: dp1
+  connection: local
+  tasks:
+    - name: Delete log target if it exists.
+      community.datapower.config:
+        domain: default
+        state: absent
+        class_name: LogTarget
+        name: syslog_LogTarget
+        config:
+
+    - name: Make a change to the WebGui
+      community.datapower.config:
+        domain: default
+        class_name: WebGUI
+        name: WebGUI-Settings
+        state: present
+        config:
+          mAdminState: enabled
+ 

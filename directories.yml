@@ -1,0 +1,18 @@
+- name: 'Demo filestore features'
+  hosts: dp1
+  connection: local
+  vars:
+    dir_path: ./collections/ansible_collections/community/datapower/tests/unit/module_utils/test_data/copy/recurse_test/local/GetStat
+  tasks:
+    - name: Upload a directory to the local directory
+      community.datapower.files:
+        domain: default
+        src: "{{ dir_path }}"
+        dest: /local/
+        state: directory    
+
+    - name: Delete a the GetStat directory
+      community.datapower.files:
+        domain: default
+        dest: /local/Services/GetStat
+        state: absent

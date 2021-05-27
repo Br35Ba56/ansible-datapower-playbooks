@@ -12,7 +12,7 @@
     - name: Get the schema of the action to determine correct parameters
       community.datapower.get_action_schema:
         domain: default
-        action: TCPConnectionTest
+        action: Export
 
     - name: Perform TCP Connection Test
       community.datapower.action:
