@@ -1,0 +1,53 @@
+- name: 'test play'
+  hosts: dp1
+  connection: local
+  vars:
+    domain: default
+  tasks:
+    - name: Export objects
+      community.datapower.export_objects:
+        domain: default 
+        ref_objects: yes
+        objects:
+          - name: valcred
+            class: CryptoValCred
+          - name: clientprofile
+            class: SSLClientProfile       
+          - name: client_profile
+            class: SSLClientProfile
+      register: json_export
+
+    - name: load objects
+      community.datapower.load_objects:
+        domain: snafu
+        objects: "{{json_export.objects}}"
+
+    - name: Export domains
+      community.datapower.export_domains:
+        export_path: ./work/   
+      register: foo_export
+
+    - name: Export foo domain from datapower config
+      community.datapower.export_domains:
+        export_path: /tmp/
+        all_files: yes
+        domains: 
+          - foo
+      register: full_export
+
+    - name: Import the full_export
+      community.datapower.import_domains:
+        overwrite_objects: yes
+        overwrite_files: yes
+        export_path: "{{full_export.export}}"
+
+    - name: Import the foo_export
+      community.datapower.import_domains:
+        overwrite_objects: yes
+        overwrite_files: yes
+        export_path: "{{full_export.export}}"
+
+
+            
+    
+        

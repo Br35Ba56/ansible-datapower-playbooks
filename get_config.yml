@@ -1,5 +1,5 @@
 ---
-- name: 'Demonstrate how to retrieve configuration from DataPower'
+- name: 'Retreive configuration objects from DataPower'
   hosts: dp1
   connection: local
   tasks:
@@ -36,3 +36,35 @@
       assert:
         that:
           - "{{ valcred_recursive['response']['_embedded']['descendants'] is defined }}"
+
+    - name: Get CryptoValCred Recursively with state information
+      community.datapower.get_config:
+        domain: default
+        class_name: CryptoValCred
+        name: valcred
+        recursive: true
+        status: yes
+      register: valcred_recursive_state
+
+    - name: Assert Get CryptoValCred Recursively with state information
+      assert:
+        that:
+          - "{{ valcred_recursive_state['response']['_embedded']['descendants'] is defined }}"
+          - "{{ valcred_recursive_state['response']['CryptoValCred']['state'] is defined }}"
+
+    - name:  Get CryptoValCred Recursively, specifying depth, with state information.
+      community.datapower.get_config:
+        domain: default
+        class_name: CryptoValCred
+        name: valcred
+        recursive: true
+        depth: 2
+        status: yes
+      register: valcred_recursive_state_depth
+
+    - name: Assert Get CryptoValCred Recursively, specifying depth, with state information.
+      assert:
+        that:
+          - "{{ valcred_recursive_state_depth['response']['_embedded']['descendants'] is defined }}"
+          - "{{ valcred_recursive_state_depth['response']['CryptoValCred']['state'] is defined }}"
+

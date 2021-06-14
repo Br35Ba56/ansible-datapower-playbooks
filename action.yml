@@ -22,3 +22,8 @@
           RemoteHost: localhost
           RemotePort: 9090
           
+    - name: Save Domain Configuration
+      community.datapower.action:
+        domain: default
+        action: SaveConfig
+        
